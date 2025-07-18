@@ -1,8 +1,10 @@
 from django.db import models
 
+from users.models import User
+
 
 class Ad(models.Model):
-    # user =
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ads", verbose_name="Создатель")
     title = models.CharField(max_length=60, verbose_name="Название")
     description = models.TextField(verbose_name="Описание")
     image_url = models.ImageField(upload_to="ads/", blank=True, null=True, verbose_name="Изображение")

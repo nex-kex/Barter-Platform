@@ -1,0 +1,35 @@
+{% extends 'ads/base.html' %}
+
+{% block title %}MyBarter{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="card m-3 p-3">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {% if object %}
+                        <button type="submit" class="btn btn-primary m-2">
+                            Сохранить
+                        </button>
+                        <a class="btn" type="submit" class="btn btn-secondary m-2"
+                           href="{% url 'ads:ad-list' %}">
+                            Отмена
+                        </a>
+                        {% else %}
+                        <button type="submit" class="btn btn-primary">
+                            Создать
+                        </button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'ads/base.html' %}
+
+{% block title %}MyBarter{% endblock %}
+
+{% block content %}
+
+<div class="card mt-5 p-3">
+    <h1 class="mb-4">Удаление товара</h1>
+    <p>Вы действительно хотите удалить товар "{{ object.name }}"?</p>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+        <button type="submit" class="btn btn-danger m-2">
+            Удалить
+        </button>
+        <a class="btn" class="btn btn-secondary m-2" href="{% url 'ads:ad-list' %}">
+            Отмена
+        </a>
+        </form>
+    </div>
+</div>
+{% endblock %}
