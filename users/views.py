@@ -1,34 +1,49 @@
-from rest_framework import generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.urls import reverse_lazy
+from django.views.generic import FormView, View, DetailView, UpdateView
+from django.contrib.auth import login
+from django.db.utils import IntegrityError
 
-from .serializers import UserCreationSerializer, UserSerializer
-from .permissions import IsUser
 from .models import User
+from .forms import UserCreationForm, UserForm
 
 
-class UserCreateView(generics.CreateAPIView):
-    """Класс для создания пользователя."""
+class UserRegisterView(FormView):
+    """Класс для регистрации пользователя."""
+    form_class = UserCreationForm
+    template_name = "users/register.html"
+    success_url = reverse_lazy("users:logout")
 
-    serializer_class = UserCreationSerializer
-    queryset = User.objects.all()
-    permission_classes = [AllowAny]
+    def form_valid(self, form):
+        try:
+            user = form.save()
+            login(self.request, user)
+            return super().form_valid(form)
 
-    def perform_create(self, serializer):
-        user = serializer.save(is_active=True)
-        user.set_password(user.password)
-        user.save()
+        except IntegrityError:
+            form.add_error("username", "Пользователь с таким username уже существует")
+            return self.form_invalid(form)
 
 
-class UserRetrieveView(generics.RetrieveAPIView):
+class LoginView(View):
+    """Класс для входа в систему."""
+    template_name = "users/login.html"
+
+
+class LogoutView(View):
+    """Класс для выхода из системы."""
+    template_name = "users/logged_out.html"
+    next_page = reverse_lazy("users:login")
+
+
+class UserDetailView(DetailView):
     """Класс для получения информации об определённом пользователе."""
+    model = User
+    template_name = "users/user_detail.html"
 
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
-
-class UserUpdateView(generics.UpdateAPIView):
+class UserUpdateView(UpdateView):
     """Класс для обновления пользователя."""
-
-    queryset = User.objects.all()
-    serializer_class = UserCreationSerializer
-    permission_classes = [IsUser, IsAuthenticated]
+    model = User
+    template_name = "users/user_form.html"
+    form_class = UserForm
+    # success_url = reverse_lazy("catalog:product_list")
