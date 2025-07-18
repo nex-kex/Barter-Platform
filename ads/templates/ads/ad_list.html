@@ -8,16 +8,23 @@
 
 <div class="row text-center">
     {% for ad in object_list %}
-    <div class="col-3">
+    <div class="col-4">
         <div class="card mb-4 box-shadow">
-            <img src="/media/{{ ad.image_url }}" class="card-img" alt="">
-            <div class="card-header" style="height: 100px">
+            <!-- Обертка с фиксированным соотношением сторон -->
+            <div style="position: relative; width: 100%; padding-top: 100%; overflow: hidden;">
+                <img src="/media/{{ ad.image_url }}"
+                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="card-header"
+                 style="height: 100px; display: flex; align-items: center; justify-content: center;">
                 <h4 class="my-0 font-weight-normal">{{ ad.title | truncatechars:45 }}</h4>
             </div>
             <div class="card-body">
-                <p style="height: 70px">{{ ad.description | truncatechars:105 }}</p>
+                <p style="height: 70px; display: flex; align-items: center; justify-content: center;">
+                    {{ ad.description | truncatechars:130 }}
+                </p>
                 <p class="card-text"><small class="text-body-secondary">
-                    {{ ad.category }}, {{ ad.condition }}
+                    {{ ad.category }}, {{ ad.get_condition_display }}
                 </small></p>
                 <a href="{% url 'ads:ad-detail' ad.pk %}"
                    class="btn btn-lg btn-block btn-outline-primary m-1">Подробнее</a>
