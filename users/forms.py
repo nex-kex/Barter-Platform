@@ -17,6 +17,7 @@ class UserForm(UserCreationForm):
 
 
 class UserCreationForm(UserCreationForm):
+    username = forms.CharField(max_length=150, help_text="Уникальное имя пользователя, до 150 символов")
     first_name = forms.CharField(max_length=50, required=False, help_text="Имя (необязательно)")
     last_name = forms.CharField(max_length=15, required=False, help_text="Фамилия (необязательно)")
     email = forms.EmailField(required=False, help_text="Email (необязательно)")
