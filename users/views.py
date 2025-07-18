@@ -1,15 +1,14 @@
 from django.urls import reverse_lazy
-from django.views.generic import FormView, View, DetailView, UpdateView
+from django.views.generic import FormView, View
 from django.contrib.auth import login
 from django.db.utils import IntegrityError
 
-from .models import User
-from .forms import UserCreationForm, UserForm
+from .forms import UserCreateForm
 
 
 class UserRegisterView(FormView):
     """Класс для регистрации пользователя."""
-    form_class = UserCreationForm
+    form_class = UserCreateForm
     template_name = "users/register.html"
     success_url = reverse_lazy("users:logout")
 
@@ -33,17 +32,3 @@ class LogoutView(View):
     """Класс для выхода из системы."""
     template_name = "users/logged_out.html"
     next_page = reverse_lazy("users:login")
-
-
-class UserDetailView(DetailView):
-    """Класс для получения информации об определённом пользователе."""
-    model = User
-    template_name = "users/user_detail.html"
-
-
-class UserUpdateView(UpdateView):
-    """Класс для обновления пользователя."""
-    model = User
-    template_name = "users/user_form.html"
-    form_class = UserForm
-    # success_url = reverse_lazy("catalog:product_list")
