@@ -7,30 +7,24 @@
 {% include 'ads/header.html' %}
 
 <div class="row text-center">
-    {% for product in object_list %}
+    {% for ad in object_list %}
     <div class="col-3">
-        {% if product.status == False %}
-        <div class="card mb-4 box-shadow text-bg-dark">
-            {% else %}
-            <div class="card mb-4 box-shadow">
-                {% endif %}
-
-                <img src="/media/{{ product.image }}" class="card-img" alt="">
-                <div class="card-header" style="height: 100px">
-                    <h4 class="my-0 font-weight-normal">{{ product.name | truncatechars:45 }}</h4>
-                </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">
-                        {{ product.price }} руб.
-                    </h1>
-                    <p style="height: 70px">{{ product.description | truncatechars:105 }}</p>
-                    <a href="{% url 'ads:ad-detail' ad.pk %}"
-                       class="btn btn-lg btn-block btn-outline-primary m-1">Подробнее</a>
-                </div>
+        <div class="card mb-4 box-shadow">
+            <img src="/media/{{ ad.image_url }}" class="card-img" alt="">
+            <div class="card-header" style="height: 100px">
+                <h4 class="my-0 font-weight-normal">{{ ad.title | truncatechars:45 }}</h4>
+            </div>
+            <div class="card-body">
+                <p style="height: 70px">{{ ad.description | truncatechars:105 }}</p>
+                <p class="card-text"><small class="text-body-secondary">
+                    {{ ad.category }}, {{ ad.condition }}
+                </small></p>
+                <a href="{% url 'ads:ad-detail' ad.pk %}"
+                   class="btn btn-lg btn-block btn-outline-primary m-1">Подробнее</a>
             </div>
         </div>
-
-        {% endfor %}
     </div>
-    {% endblock %}
+
+    {% endfor %}
 </div>
+{% endblock %}

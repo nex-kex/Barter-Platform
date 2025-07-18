@@ -4,7 +4,6 @@ from users.models import User
 
 
 class Ad(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ads", verbose_name="Создатель")
     title = models.CharField(max_length=60, verbose_name="Название")
     description = models.TextField(verbose_name="Описание")
     image_url = models.ImageField(upload_to="ads/", blank=True, null=True, verbose_name="Изображение")
@@ -25,6 +24,7 @@ class Ad(models.Model):
         verbose_name="Состояние",
     )
     created_at = models.DateField(auto_now_add=True, verbose_name="Дата создания")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ads", verbose_name="Создатель")
 
     def __str__(self):
         return self.title

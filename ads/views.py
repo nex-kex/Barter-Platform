@@ -26,6 +26,7 @@ class AdListView(ListView):
 
 class AdDetailView(LoginRequiredMixin, DetailView):
     model = Ad
+    context_object_name = "ad"
 
 
 class AdCreateView(LoginRequiredMixin, CreateView):
@@ -34,9 +35,8 @@ class AdCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("ads:ad-list")
 
     def form_valid(self, form):
-        ad = form.save()
-        user = self.request.user
-        ad.user = user
+        ad = form.save(commit=False)
+        ad.user = self.request.user
         ad.save()
         return super().form_valid(form)
 
@@ -47,11 +47,10 @@ class AdCreateView(LoginRequiredMixin, CreateView):
 class AdUpdateView(LoginRequiredMixin, UpdateView):
     model = Ad
     form_class = AdForm
-    success_url = reverse_lazy("ads:ad-list")
 
     def get_form_class(self):
         user = self.request.user
-        if user == self.object.owner:
+        if user == self.object.user:
             return AdForm
         raise PermissionDenied
 
@@ -63,8 +62,8 @@ class AdDeleteView(LoginRequiredMixin, DeleteView):
     model = Ad
     success_url = reverse_lazy("ads:ad-list")
 
-    def get_form_class(self):
-        user = self.request.user
-        if user == self.object.owner:
-            return AdForm
-        raise PermissionDenied
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user != self.request.user:
+            raise PermissionDenied("У вас нет прав для удаления этого товара")
+        return obj
