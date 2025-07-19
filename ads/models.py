@@ -8,21 +8,20 @@ class Ad(models.Model):
     description = models.TextField(verbose_name="Описание")
     image_url = models.ImageField(upload_to="ads/", blank=True, null=True, verbose_name="Изображение")
     category = models.CharField(max_length=20, verbose_name="Категория")
-    condition = models.CharField(
-        max_length=11,
-        choices=[
-            ("new", "новый"),
-            ("used", "б/у"),
-            ("display", "витринный"),
-            ("discounted", "уцененный"),
-            ("refurbished", "восстановленный"),
-            ("incomplete", "недоукомплектованный"),
-            ("expiring", "заканчивается срок годности"),
-            ("returned", "продается повторно"),
-            ("other", "другое"),
-        ],
-        verbose_name="Состояние",
-    )
+
+    CONDITION_CHOICES = [
+        ("new", "новый"),
+        ("used", "б/у"),
+        ("display", "витринный"),
+        ("discounted", "уцененный"),
+        ("refurbished", "восстановленный"),
+        ("incomplete", "недоукомплектованный"),
+        ("expiring", "заканчивается срок годности"),
+        ("returned", "продается повторно"),
+        ("other", "другое"),
+    ]
+
+    condition = models.CharField(max_length=11, choices=CONDITION_CHOICES, verbose_name="Состояние")
     created_at = models.DateField(auto_now_add=True, verbose_name="Дата создания")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ads", verbose_name="Создатель")
 

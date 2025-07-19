@@ -1,12 +1,45 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
-                                  UpdateView)
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .forms import AdForm, ExchangeProposalForm, ExchangeProposalUpdateForm
 from .models import Ad, ExchangeProposal
+
+
+class AdSearchView(ListView):
+    model = Ad
+    template_name = "ads/search_results.html"
+    paginate_by = 15
+    context_object_name = "ads"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        search_query = self.request.GET.get("search")
+        category = self.request.GET.get("category")
+        condition = self.request.GET.get("condition")
+
+        if search_query:
+            queryset = queryset.filter(Q(title__icontains=search_query) | Q(description__icontains=search_query))
+
+        if category:
+            queryset = queryset.filter(category__iexact=category)
+
+        if condition:
+            queryset = queryset.filter(condition=condition)
+
+        return queryset.order_by("-created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["unique_categories"] = Ad.objects.order_by().values_list("category", flat=True).distinct()
+        context["condition_choices"] = Ad.CONDITION_CHOICES
+
+        return context
 
 
 class AdListView(ListView):

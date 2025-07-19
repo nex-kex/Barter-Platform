@@ -26,4 +26,6 @@ urlpatterns = [
     # Смена статуса предложения обмена
     path("exchange/<int:pk>/accept/", views.AcceptExchangeProposalView.as_view(), name="exchange-accept"),
     path("exchange/<int:pk>/decline/", views.DeclineExchangeProposalView.as_view(), name="exchange-decline"),
+    # Поиск
+    path("search/", views.AdSearchView.as_view(), name="search"),
 ]
