@@ -11,7 +11,7 @@ class UserRegisterView(FormView):
 
     form_class = UserCreateForm
     template_name = "users/register.html"
-    success_url = reverse_lazy("users:logout")
+    success_url = reverse_lazy("ads:ad-list")
 
     def form_valid(self, form):
         try:

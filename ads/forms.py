@@ -26,7 +26,30 @@ class ExchangeProposalForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs.update({"class": "form-control"})
 
-        # Предложить можно только свой товар, а запросить - только чужой
         if user:
+            # Предложить можно только свой товар, а запросить - только чужой
             self.fields["ad_sender"].queryset = Ad.objects.filter(user=user)
-            self.fields["ad_receiver"].queryset = Ad.objects.filter(user != user)
+            self.fields["ad_receiver"].queryset = Ad.objects.exclude(user=user)
+
+
+class ExchangeProposalUpdateForm(forms.ModelForm):
+    class Meta:
+        model = ExchangeProposal
+        fields = ["ad_sender", "comment"]
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        super(ExchangeProposalUpdateForm, self).__init__(*args, **kwargs)
+
+        for field in self.fields.values():
+            field.widget.attrs.update({"class": "form-control"})
+
+        if user:
+            # Предложить можно только свой товар
+            self.fields["ad_sender"].queryset = Ad.objects.filter(user=user)
+
+
+class ExchangeProposalNewStatus(forms.ModelForm):
+    class Meta:
+        model = ExchangeProposal
+        fields = ["status"]
