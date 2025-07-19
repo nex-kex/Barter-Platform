@@ -37,7 +37,7 @@
             </th>
             <td>{{ exchange.ad_sender }}</td>
             <td>{{ exchange.ad_receiver }}</td>
-            <td>{{ exchange.status }}</td>
+            <td>{{ exchange.get_status_display }}</td>
         </tr>
         {% endfor %}
         </tbody>

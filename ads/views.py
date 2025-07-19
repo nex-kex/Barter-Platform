@@ -10,9 +10,27 @@ from .models import Ad, ExchangeProposal
 
 
 class AdListView(ListView):
-    """Класс-представление для отображения списка товаров."""
+    """Класс-представление для отображения списка всех товаров."""
 
     model = Ad
+
+
+class NotUserAdListView(ListView):
+    """Класс-представление для отображения списка товаров, не опубликованных пользователем."""
+
+    model = Ad
+
+    def get_queryset(self):
+        return Ad.objects.exclude(user=self.request.user)
+
+
+class UserAdListView(ListView):
+    """Класс-представление для отображения списка товаров, опубликованных пользователем."""
+
+    model = Ad
+
+    def get_queryset(self):
+        return Ad.objects.filter(user=self.request.user)
 
 
 class AdDetailView(LoginRequiredMixin, DetailView):
@@ -27,7 +45,6 @@ class AdCreateView(LoginRequiredMixin, CreateView):
 
     model = Ad
     form_class = AdForm
-    success_url = reverse_lazy("ads:ad-list")
 
     def form_valid(self, form):
         ad = form.save(commit=False)
@@ -59,7 +76,7 @@ class AdDeleteView(LoginRequiredMixin, DeleteView):
     """Класс-представление для удаления товаров."""
 
     model = Ad
-    success_url = reverse_lazy("ads:ad-list")
+    success_url = reverse_lazy("ads:user-ad-list")
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
@@ -68,16 +85,24 @@ class AdDeleteView(LoginRequiredMixin, DeleteView):
         return obj
 
 
-class ExchangeProposalListView(LoginRequiredMixin, ListView):
-    """Класс-представление для отображения списка предложений обмена."""
+class SentExchangeProposalListView(LoginRequiredMixin, ListView):
+    """Класс-представление для отображения списка отправленных предложений обмена."""
 
     model = ExchangeProposal
+    ordering = ["-status"]
 
     def get_queryset(self):
-        # Пользователь может видеть все отправленные и полученные предложения обмена
-        sent_proposals = ExchangeProposal.objects.filter(ad_sender__user=self.request.user)
-        received_proposals = ExchangeProposal.objects.filter(ad_receiver__user=self.request.user)
-        return sent_proposals.union(received_proposals)
+        return super().get_queryset().filter(ad_sender__user=self.request.user)
+
+
+class ReceivedExchangeProposalListView(LoginRequiredMixin, ListView):
+    """Класс-представление для отображения списка полученных предложений обмена."""
+
+    model = ExchangeProposal
+    ordering = ["-status"]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(ad_receiver__user=self.request.user)
 
 
 class ExchangeProposalDetailView(LoginRequiredMixin, DetailView):
