@@ -10,7 +10,6 @@
     {% for ad in object_list %}
     <div class="col-4">
         <div class="card mb-4 box-shadow">
-            <!-- Обертка с фиксированным соотношением сторон -->
             <div style="position: relative; width: 100%; padding-top: 100%; overflow: hidden;">
                 <img src="/media/{{ ad.image_url }}"
                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
@@ -20,14 +19,20 @@
                 <h4 class="my-0 font-weight-normal">{{ ad.title | truncatechars:45 }}</h4>
             </div>
             <div class="card-body">
+                <small class="text-body-secondary">Описание: </small>
                 <p style="height: 70px; display: flex; align-items: center; justify-content: center;">
                     {{ ad.description | truncatechars:130 }}
                 </p>
-                <p class="card-text"><small class="text-body-secondary">
-                    {{ ad.category }}, {{ ad.get_condition_display }}
-                </small></p>
+                <small class="text-body-secondary">Категория: </small>
+                <p class="card-text">{{ ad.category }}</p>
+                <small class="text-body-secondary">Статус: </small>
+                <p class="card-text">{{ ad.get_condition_display }}</p>
+                <small class="text-body-secondary">Создано: </small>
+                <p class="card-text">{{ ad.user }} {{ ad.created_at | date:"d.m.Y" }}</p>
                 <a href="{% url 'ads:ad-detail' ad.pk %}"
                    class="btn btn-lg btn-block btn-outline-primary m-1">Подробнее</a>
+                <hr class="border border-1 opacity-75">
+                <p class="card-text m-0 p-0">ID: {{ ad.pk }}</p>
             </div>
         </div>
     </div>

@@ -21,7 +21,7 @@
                     {{ object.title }} руб.
                 </h1>
                 <p class="card-text"><small class="text-body-secondary">
-                    {{ object.category }}, {{ object.condition }}
+                    {{ object.category }}, {{ object.get_condition_display }}
                 </small></p>
                 <p class="card-text">
                     {{ object.description }}
@@ -38,7 +38,7 @@
                 {% endif %}
 
                 <p class="card-text mt-2"><small class="text-body-secondary">
-                    Создано {{ object.created_at | date:"d.m.Y" }}
+                    Создано {{ object.user }} {{ object.created_at | date:"d.m.Y" }}
                 </small></p>
             </div>
         </div>
