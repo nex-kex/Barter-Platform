@@ -1,10 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView)
 
-from .forms import AdForm, ExchangeProposalForm
+from .forms import AdForm, ExchangeProposalForm, ExchangeProposalUpdateForm
 from .models import Ad, ExchangeProposal
 
 
@@ -74,9 +75,9 @@ class ExchangeProposalListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         # Пользователь может видеть все отправленные и полученные предложения обмена
-        return ExchangeProposal.objects.filter(ad_sender__user=self.request.user) + ExchangeProposal.objects.filter(
-            ad_receiver__user=self.request.user
-        )
+        sent_proposals = ExchangeProposal.objects.filter(ad_sender__user=self.request.user)
+        received_proposals = ExchangeProposal.objects.filter(ad_receiver__user=self.request.user)
+        return sent_proposals.union(received_proposals)
 
 
 class ExchangeProposalDetailView(LoginRequiredMixin, DetailView):
@@ -91,35 +92,51 @@ class ExchangeProposalCreateView(LoginRequiredMixin, CreateView):
     model = ExchangeProposal
     form_class = ExchangeProposalForm
 
+    def get(self, request, *args, **kwargs):
+        """Если у пользователя нет товара, то его перенаправит на страницу создания."""
+        if not request.user.ads.exists():
+            return redirect("ads:ad-create")
+        return super().get(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy("ads:exchange-detail", args=[self.object.pk])
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user  # Добавляем пользователя
+        return kwargs
 
 
 class ExchangeProposalUpdateView(LoginRequiredMixin, UpdateView):
     """Класс-представление для изменения предложений обмена."""
 
     model = ExchangeProposal
-    form_class = ExchangeProposalForm
+    form_class = ExchangeProposalUpdateForm
 
     def get_form_class(self):
         user = self.request.user
-        if user == self.object["ad_sender"]["user"]:
-            return ExchangeProposalForm
+        if user == self.object.ad_sender.user:
+            return ExchangeProposalUpdateForm
         raise PermissionDenied
 
     def get_success_url(self):
         return reverse("ads:exchange-detail", args=[self.kwargs.get("pk")])
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user  # Добавляем пользователя
+        return kwargs
 
 
 class ExchangeProposalDeleteView(LoginRequiredMixin, DeleteView):
     """Класс-представление для удаления предложений обмена."""
 
     model = ExchangeProposal
-    success_url = reverse_lazy("exchange:ad-list")
+    success_url = reverse_lazy("ads:exchange-list")
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
-        if obj["ad_sender"]["user"] != self.request.user:
+        if obj.ad_sender.user != self.request.user:
             raise PermissionDenied("У вас нет прав для удаления этого предложения")
         return obj
 
@@ -128,39 +145,27 @@ class AcceptExchangeProposalView(LoginRequiredMixin, UpdateView):
     """Класс-представление для принятия предложения обмена."""
 
     model = ExchangeProposal
-    form_class = ExchangeProposalForm
+    fields = []
 
-    def get_form_class(self):
-        user = self.request.user
-        if user == self.object["ad_receiver"]["user"]:
-            return ExchangeProposalForm
-        raise PermissionDenied
+    def form_valid(self, form):
+        self.object.status = "accepted"
+        self.object.save()
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse("ads:exchange-detail", args=[self.kwargs.get("pk")])
-
-    def post(self, request, *args, **kwargs):
-        self.object["status"] = "accepted"
-        self.object.save()
-        return super().post(request, *args, **kwargs)
 
 
 class DeclineExchangeProposalView(LoginRequiredMixin, UpdateView):
     """Класс-представление для отказа от предложения обмена."""
 
     model = ExchangeProposal
-    form_class = ExchangeProposalForm
+    fields = []
 
-    def get_form_class(self):
-        user = self.request.user
-        if user == self.object["ad_receiver"]["user"]:
-            return ExchangeProposalForm
-        raise PermissionDenied
+    def form_valid(self, form):
+        self.object.status = "declined"
+        self.object.save()
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse("ads:exchange-detail", args=[self.kwargs.get("pk")])
-
-    def post(self, request, *args, **kwargs):
-        self.object["status"] = "declined"
-        self.object.save()
-        return super().post(request, *args, **kwargs)

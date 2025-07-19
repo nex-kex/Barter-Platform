@@ -47,9 +47,3 @@ class ExchangeProposalUpdateForm(forms.ModelForm):
         if user:
             # Предложить можно только свой товар
             self.fields["ad_sender"].queryset = Ad.objects.filter(user=user)
-
-
-class ExchangeProposalNewStatus(forms.ModelForm):
-    class Meta:
-        model = ExchangeProposal
-        fields = ["status"]
