@@ -13,21 +13,24 @@ class AdListView(ListView):
     """Класс-представление для отображения списка всех товаров."""
 
     model = Ad
+    paginate_by = 15
 
 
-class NotUserAdListView(ListView):
+class NotUserAdListView(LoginRequiredMixin, ListView):
     """Класс-представление для отображения списка товаров, не опубликованных пользователем."""
 
     model = Ad
+    paginate_by = 15
 
     def get_queryset(self):
         return Ad.objects.exclude(user=self.request.user)
 
 
-class UserAdListView(ListView):
+class UserAdListView(LoginRequiredMixin, ListView):
     """Класс-представление для отображения списка товаров, опубликованных пользователем."""
 
     model = Ad
+    paginate_by = 15
 
     def get_queryset(self):
         return Ad.objects.filter(user=self.request.user)
@@ -90,6 +93,7 @@ class SentExchangeProposalListView(LoginRequiredMixin, ListView):
 
     model = ExchangeProposal
     ordering = ["-status"]
+    paginate_by = 15
 
     def get_queryset(self):
         return super().get_queryset().filter(ad_sender__user=self.request.user)
@@ -100,6 +104,7 @@ class ReceivedExchangeProposalListView(LoginRequiredMixin, ListView):
 
     model = ExchangeProposal
     ordering = ["-status"]
+    paginate_by = 15
 
     def get_queryset(self):
         return super().get_queryset().filter(ad_receiver__user=self.request.user)
