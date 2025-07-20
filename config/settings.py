@@ -22,8 +22,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "users",
     "ads",
-    "rest_framework",
-    "django_filters",
 ]
 
 REST_FRAMEWORK = {

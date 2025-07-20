@@ -12,8 +12,6 @@ dependencies = [
     "pillow (>=11.3.0,<12.0.0)",
     "dotenv (>=0.9.9,<0.10.0)",
     "psycopg2-binary (>=2.9.10,<3.0.0)",
-    "djangorestframework (>=3.16.0,<4.0.0)",
-    "django-filter (>=25.1,<26.0)",
 ]
 
 
@@ -31,3 +29,6 @@ coverage = "^7.9.2"
 [tool.black]
 line-length = 119
 
+[tool.mypy]
+ignore_missing_imports = true
+exclude = "(^|/)(migrations|config)/"

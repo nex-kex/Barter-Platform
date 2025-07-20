@@ -26,10 +26,8 @@ class AdSearchView(ListView):
 
         if search_query:
             queryset = queryset.filter(Q(title__icontains=search_query) | Q(description__icontains=search_query))
-
         if category:
             queryset = queryset.filter(category__iexact=category)
-
         if condition:
             queryset = queryset.filter(condition=condition)
 
@@ -237,7 +235,7 @@ class AcceptExchangeProposalView(LoginRequiredMixin, UserPassesTestMixin, Update
     """Класс-представление для принятия предложения обмена."""
 
     model = ExchangeProposal
-    fields = []
+    fields: list = []
 
     def test_func(self):
         exchange = self.get_object()
@@ -260,7 +258,7 @@ class DeclineExchangeProposalView(LoginRequiredMixin, UserPassesTestMixin, Updat
     """Класс-представление для отказа от предложения обмена."""
 
     model = ExchangeProposal
-    fields = []
+    fields: list = []
 
     def test_func(self):
         exchange = self.get_object()

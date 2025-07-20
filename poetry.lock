@@ -190,36 +190,6 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
-name = "django-filter"
-version = "25.1"
-description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = [
-    {file = "django_filter-25.1-py3-none-any.whl", hash = "sha256:4fa48677cf5857b9b1347fed23e355ea792464e0fe07244d1fdfb8a806215b80"},
-    {file = "django_filter-25.1.tar.gz", hash = "sha256:1ec9eef48fa8da1c0ac9b411744b16c3f4c31176c867886e4c48da369c407153"},
-]
-
-[package.dependencies]
-Django = ">=4.2"
-
-[[package]]
-name = "djangorestframework"
-version = "3.16.0"
-description = "Web APIs for Django, made easy."
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = [
-    {file = "djangorestframework-3.16.0-py3-none-any.whl", hash = "sha256:bea7e9f6b96a8584c5224bfb2e4348dfb3f8b5e34edbecb98da258e892089361"},
-    {file = "djangorestframework-3.16.0.tar.gz", hash = "sha256:f022ff46613584de994c0c6a4aebbace5fd700555fbe9d33b865ebf173eba6c9"},
-]
-
-[package.dependencies]
-django = ">=4.2"
-
-[[package]]
 name = "dotenv"
 version = "0.9.9"
 description = "Deprecated package"
@@ -671,4 +641,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "38606d4049a7543dbff3e5e0992d0a9bb665b629b7a06164436c3283667737a5"
+content-hash = "ffcac631bb673ff74351177ed5873649656456ab54e61bab047faf8a56fb9b58"
