@@ -1,9 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
 
 from .forms import AdForm, ExchangeProposalForm, ExchangeProposalUpdateForm
 from .models import Ad, ExchangeProposal
@@ -92,11 +94,19 @@ class AdCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy("ads:ad-detail", args=[self.object.pk])
 
 
-class AdUpdateView(LoginRequiredMixin, UpdateView):
+class AdUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """Класс-представление для изменения товаров."""
 
     model = Ad
     form_class = AdForm
+
+    def test_func(self):
+        ad = self.get_object()
+        return ad.user == self.request.user
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Вы не автор этого товара")
+        return redirect("ads:ad-list")
 
     def get_form_class(self):
         user = self.request.user
@@ -148,6 +158,17 @@ class ExchangeProposalDetailView(LoginRequiredMixin, DetailView):
 
     model = ExchangeProposal
 
+    def get(self, request, *args, **kwargs):
+        obj = self.get_object()
+        user = request.user
+
+        sender = obj.ad_sender.user
+        receiver = obj.ad_receiver.user
+        if user != sender and user != receiver:
+            raise PermissionDenied("Вы не можете просматривать это предложение")
+
+        return super().get(self, request, *args, **kwargs)
+
 
 class ExchangeProposalCreateView(LoginRequiredMixin, CreateView):
     """Класс-представление для создания предложений обмена."""
@@ -170,11 +191,19 @@ class ExchangeProposalCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
 
-class ExchangeProposalUpdateView(LoginRequiredMixin, UpdateView):
+class ExchangeProposalUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """Класс-представление для изменения предложений обмена."""
 
     model = ExchangeProposal
     form_class = ExchangeProposalUpdateForm
+
+    def test_func(self):
+        exchange = self.get_object()
+        return exchange.ad_sender.user == self.request.user
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Вы не автор этого предложения")
+        return redirect("ads:sent-exchange-list")
 
     def get_form_class(self):
         user = self.request.user
@@ -204,11 +233,19 @@ class ExchangeProposalDeleteView(LoginRequiredMixin, DeleteView):
         return obj
 
 
-class AcceptExchangeProposalView(LoginRequiredMixin, UpdateView):
+class AcceptExchangeProposalView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """Класс-представление для принятия предложения обмена."""
 
     model = ExchangeProposal
     fields = []
+
+    def test_func(self):
+        exchange = self.get_object()
+        return exchange.as_receiver.user == self.request.user
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Вы не можете принимать или отклонять это предложение")
+        return redirect("ads:received-exchange-list")
 
     def form_valid(self, form):
         self.object.status = "accepted"
@@ -219,11 +256,19 @@ class AcceptExchangeProposalView(LoginRequiredMixin, UpdateView):
         return reverse("ads:exchange-detail", args=[self.kwargs.get("pk")])
 
 
-class DeclineExchangeProposalView(LoginRequiredMixin, UpdateView):
+class DeclineExchangeProposalView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """Класс-представление для отказа от предложения обмена."""
 
     model = ExchangeProposal
     fields = []
+
+    def test_func(self):
+        exchange = self.get_object()
+        return exchange.as_receiver.user == self.request.user
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Вы не можете принимать или отклонять это предложение")
+        return redirect("ads:received-exchange-list")
 
     def form_valid(self, form):
         self.object.status = "declined"

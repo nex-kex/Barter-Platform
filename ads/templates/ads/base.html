@@ -30,6 +30,7 @@
             Товары
         </a>
         <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'ads:ad-list' %}">Все товары</a></li>
             <li><a class="dropdown-item" href="{% url 'ads:user-ad-list' %}">Мои товары</a></li>
             <li><a class="dropdown-item" href="{% url 'ads:not-user-ad-list' %}">Остальные</a></li>
         </ul>
