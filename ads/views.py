@@ -47,6 +47,7 @@ class AdListView(ListView):
 
     model = Ad
     paginate_by = 15
+    ordering = "id"
 
 
 class NotUserAdListView(LoginRequiredMixin, ListView):
@@ -54,6 +55,7 @@ class NotUserAdListView(LoginRequiredMixin, ListView):
 
     model = Ad
     paginate_by = 15
+    ordering = "id"
 
     def get_queryset(self):
         return Ad.objects.exclude(user=self.request.user)
@@ -64,6 +66,7 @@ class UserAdListView(LoginRequiredMixin, ListView):
 
     model = Ad
     paginate_by = 15
+    ordering = "id"
 
     def get_queryset(self):
         return Ad.objects.filter(user=self.request.user)
