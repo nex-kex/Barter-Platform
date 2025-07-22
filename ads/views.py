@@ -214,7 +214,7 @@ class ExchangeProposalUpdateView(LoginRequiredMixin, UserPassesTestMixin, Update
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user  # Добавляем пользователя
+        kwargs["user"] = self.request.user
         return kwargs
 
 
@@ -222,7 +222,7 @@ class ExchangeProposalDeleteView(LoginRequiredMixin, DeleteView):
     """Класс-представление для удаления предложений обмена."""
 
     model = ExchangeProposal
-    success_url = reverse_lazy("ads:exchange-list")
+    success_url = reverse_lazy("ads:sent-exchange-list")
 
     def get_object(self, queryset=None):
         obj = super().get_object(queryset)
