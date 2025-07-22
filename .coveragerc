@@ -1,0 +1,8 @@
+[run]
+source = .
+omit =
+    */config/*
+    *manage.py*
+    */migrations/*
+    */tests.py*
+    */admin.py*

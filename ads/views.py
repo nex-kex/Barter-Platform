@@ -239,7 +239,7 @@ class AcceptExchangeProposalView(LoginRequiredMixin, UserPassesTestMixin, Update
 
     def test_func(self):
         exchange = self.get_object()
-        return exchange.as_receiver.user == self.request.user
+        return exchange.ad_receiver.user == self.request.user
 
     def handle_no_permission(self):
         messages.error(self.request, "Вы не можете принимать или отклонять это предложение")
@@ -262,7 +262,7 @@ class DeclineExchangeProposalView(LoginRequiredMixin, UserPassesTestMixin, Updat
 
     def test_func(self):
         exchange = self.get_object()
-        return exchange.as_receiver.user == self.request.user
+        return exchange.ad_receiver.user == self.request.user
 
     def handle_no_permission(self):
         messages.error(self.request, "Вы не можете принимать или отклонять это предложение")

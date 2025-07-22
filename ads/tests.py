@@ -1,17 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.conf import settings
 
 from ads.models import Ad, ExchangeProposal
 from users.models import User
 
 
 class AdTestCase(TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        settings.TESTING = True
-        super().setUpClass()
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -77,12 +71,6 @@ class AdTestCase(TestCase):
 
 
 class ExchangeProposalTestCase(TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        settings.TESTING = True
-        super().setUpClass()
-
     def setUp(self):
         self.user1 = User.objects.create_user(
             password="password",
@@ -149,10 +137,28 @@ class ExchangeProposalTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['exchangeproposal'].comment, "Test comment")
         self.assertContains(response, "Test comment")
-
+        self.assertEqual(str(self.ep), f"Предложение номер {self.ep.id}")
 
     def test_exchange_destroy(self):
         """Удаление предложения обмена."""
         response = self.client.post(reverse("ads:exchange-delete", args=[self.ep.id]))
         self.assertEqual(response.status_code, 302)
         self.assertFalse(ExchangeProposal.objects.filter(id=self.ep.id).exists())
+
+
+    def test_accept_exchange(self):
+        """Принятие предложения."""
+        self.client.force_login(user=self.user2)
+        response = self.client.post(reverse("ads:exchange-accept", args=[self.ep.id]))
+        self.assertEqual(response.status_code, 302)
+        self.ep.refresh_from_db()
+        self.assertEqual(self.ep.status, "accepted")
+
+
+    def test_decline_exchange(self):
+        """Принятие предложения."""
+        self.client.force_login(user=self.user2)
+        response = self.client.post(reverse("ads:exchange-decline", args=[self.ep.id]))
+        self.assertEqual(response.status_code, 302)
+        self.ep.refresh_from_db()
+        self.assertEqual(self.ep.status, "declined")
