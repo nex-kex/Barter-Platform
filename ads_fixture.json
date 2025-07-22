@@ -1,0 +1,176 @@
+[
+{
+    "model": "ads.ad",
+    "pk": 1,
+    "fields": {
+        "title": "Ноутбук Asus ZenBook",
+        "description": "Ультрабук в отличном состоянии, 16 ГБ RAM, SSD 512 ГБ",
+        "image_url": "ads/Ноутбук_Asus_ZenBook.webp",
+        "category": "Электроника",
+        "condition": "used",
+        "created_at": "2025-07-22",
+        "user": 2
+    }
+},
+{
+    "model": "ads.ad",
+    "pk": 2,
+    "fields": {
+        "title": "Смартфон Samsung Galaxy S21",
+        "description": "Телефон в идеальном состоянии, с гарантией до конца года",
+        "image_url": "ads/Смартфон_Samsung_Galaxy_S21.webp",
+        "category": "Электроника",
+        "condition": "display",
+        "created_at": "2025-07-22",
+        "user": 2
+    }
+},
+{
+    "model": "ads.ad",
+    "pk": 3,
+    "fields": {
+        "title": "Кожаный диван",
+        "description": "Диван из натуральной кожи, небольшой потертости",
+        "image_url": "ads/Кожаный_диван.jpg",
+        "category": "Мебель",
+        "condition": "used",
+        "created_at": "2025-07-22",
+        "user": 3
+    }
+},
+{
+    "model": "ads.ad",
+    "pk": 4,
+    "fields": {
+        "title": "Кофемашина DeLonghi",
+        "description": "Новая в коробке, уценка из-за поврежденной упаковки",
+        "image_url": "ads/Кофемашина_DeLonghi.webp",
+        "category": "Бытовая техника",
+        "condition": "discounted",
+        "created_at": "2025-07-22",
+        "user": 3
+    }
+},
+{
+    "model": "ads.ad",
+    "pk": 5,
+    "fields": {
+        "title": "Фотоаппарат Canon EOS",
+        "description": "Восстановленный в сервисном центре, с гарантией",
+        "image_url": "ads/Фотоаппарат_Canon_EOS.webp",
+        "category": "Фототехника",
+        "condition": "refurbished",
+        "created_at": "2025-07-22",
+        "user": 4
+    }
+},
+{
+    "model": "ads.ad",
+    "pk": 6,
+    "fields": {
+        "title": "Набор инструментов",
+        "description": "Неполный комплект, отсутствует несколько отверток",
+        "image_url": "",
+        "category": "Инструменты",
+        "condition": "incomplete",
+        "created_at": "2025-07-22",
+        "user": 4
+    }
+},
+{
+    "model": "ads.ad",
+    "pk": 7,
+    "fields": {
+        "title": "Детское питание",
+        "description": "Срок годности заканчивается через 2 недели",
+        "image_url": "",
+        "category": "Продукты",
+        "condition": "expiring",
+        "created_at": "2025-07-22",
+        "user": 5
+    }
+},
+{
+    "model": "ads.ad",
+    "pk": 8,
+    "fields": {
+        "title": "Велосипед горный",
+        "description": "Возврат после одного использования, как новый",
+        "image_url": "ads/Велосипед_горный.webp",
+        "category": "Спорт",
+        "condition": "returned",
+        "created_at": "2025-07-22",
+        "user": 5
+    }
+},
+{
+    "model": "ads.ad",
+    "pk": 9,
+    "fields": {
+        "title": "Антикварная ваза",
+        "description": "Редкий экземпляр, требует реставрации",
+        "image_url": "",
+        "category": "Антиквариат",
+        "condition": "other",
+        "created_at": "2025-07-22",
+        "user": 6
+    }
+},
+{
+    "model": "ads.ad",
+    "pk": 10,
+    "fields": {
+        "title": "Книга 'Война и мир'",
+        "description": "Подарочное издание, новое",
+        "image_url": "ads/Книга_Война_и_мир.jpg",
+        "category": "Книги",
+        "condition": "new",
+        "created_at": "2025-07-22",
+        "user": 6
+    }
+},
+{
+    "model": "ads.exchangeproposal",
+    "pk": 1,
+    "fields": {
+        "ad_sender": 1,
+        "ad_receiver": 3,
+        "comment": "Готов обменять ноутбук на ваш диван",
+        "status": "waiting",
+        "created_at": "2025-07-22"
+    }
+},
+{
+    "model": "ads.exchangeproposal",
+    "pk": 2,
+    "fields": {
+        "ad_sender": 2,
+        "ad_receiver": 4,
+        "comment": "Предлагаю обмен телефона на кофемашину",
+        "status": "accepted",
+        "created_at": "2025-07-22"
+    }
+},
+{
+    "model": "ads.exchangeproposal",
+    "pk": 3,
+    "fields": {
+        "ad_sender": 5,
+        "ad_receiver": 7,
+        "comment": "Фотоаппарат за детское питание?",
+        "status": "declined",
+        "created_at": "2025-07-22"
+    }
+},
+{
+    "model": "ads.exchangeproposal",
+    "pk": 4,
+    "fields": {
+        "ad_sender": 6,
+        "ad_receiver": 8,
+        "comment": "Инструменты на велосипед, могу добавить денег",
+        "status": "waiting",
+        "created_at": "2025-07-22"
+    }
+}
+]

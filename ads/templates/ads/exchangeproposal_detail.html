@@ -1,0 +1,74 @@
+{% extends 'ads/base.html' %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block content %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">
+        Предложение обмена номер {{ object.pk }}
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="card m-3 p-2">
+            <div class="card-body">
+                <table style="width: 100%; border-collapse: collapse; border: none;">
+                    <tbody>
+                    <tr style="border: none;">
+                        <td style="text-align: left; border: none; padding: 5px 0;"><h4>Товар-предложение:</h4></td>
+                        <td style="text-align: right; border: none; padding: 5px 0;">
+                            <a class="btn btn-primary" href="{% url 'ads:ad-detail' object.ad_sender.pk %}">
+                                {{ object.ad_sender.pk }}
+                            </a>
+                        </td>
+                    </tr>
+                    <tr style="border: none;">
+                        <td style="text-align: left; border: none; padding: 5px 0;"><h4>Товар-спрос:</h4></td>
+                        <td style="text-align: right; border: none; padding: 5px 0;">
+                            <a class="btn btn-primary" href="{% url 'ads:ad-detail' object.ad_receiver.pk %}">
+                                {{ object.ad_receiver.pk }}
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                {% if object.comment %}
+                <h4>Комментарий:</h4>
+                <p class="mt-3">{{ object.comment }}</p>
+                {% endif %}
+                <h4>Статус: {{ object.get_status_display }}</h4>
+                {% if user == object.ad_receiver.user %}
+                {% if object.status == "waiting" %}
+                <form method="post" action="{% url 'ads:exchange-accept' object.pk %}"
+                      style="display: inline-block">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success mt-2">Принять</button>
+                </form>
+                <form method="post" action="{% url 'ads:exchange-decline' object.pk %}"
+                      style="display: inline-block">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-danger mt-2">Отклонить</button>
+                </form>
+                {% endif %}
+                {% elif user == object.ad_sender.user %}
+                <a href="{% url 'ads:exchange-update' object.pk %}"
+                   class="btn btn-outline-primary mt-2">Редактировать</a>
+                <a href="{% url 'ads:exchange-delete' object.pk %}"
+                   class="btn btn-outline-danger mt-2">Удалить</a>
+                {% endif %}
+
+                <p class="card-text mt-2"><small class="text-body-secondary">
+                    Создано {{ object.ad_sender.user }} {{ object.created_at | date:"d.m.Y" }}
+                </small></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-3"></div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'ads/base.html' %}
+
+{% block title %}MyBarter{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center m-3">
+    Все предложения обмена
+</h1>
+
+<div class="container">
+    <div class="row mb-2">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <a class="btn btn-primary w-100" href="{% url 'ads:exchange-create' %}">
+                Создать новое предложение
+            </a>
+        </div>
+        <div class="col-3"></div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID предложения</th>
+            <th scope="col">Товар-предложение</th>
+            <th scope="col">Товар-спрос</th>
+            <th scope="col">Статус</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for exchange in object_list %}
+        <tr>
+            <th scope="row">
+                <a class="btn btn-outline-secondary" href="{% url 'ads:exchange-detail' exchange.pk %}">
+                    {{ exchange.pk }}
+                </a>
+            </th>
+            <td>{{ exchange.ad_sender }}</td>
+            <td>{{ exchange.ad_receiver }}</td>
+            <td>{{ exchange.get_status_display }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="justify-content-center pagination">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+      <a class="btn btn-outline-primary" href="?page=1"><<</a>
+      <a class="btn btn-outline-primary" href="?page={{ page_obj.previous_page_number }}"><</a>
+    {% endif %}
+
+    <span class="current">
+      [{{ page_obj.number }} из {{ page_obj.paginator.num_pages }}]
+    </span>
+
+    {% if page_obj.has_next %}
+      <a class="btn btn-outline-primary" href="?page={{ page_obj.next_page_number }}">></a>
+      <a class="btn btn-outline-primary" href="?page={{ page_obj.paginator.num_pages }}">>></a>
+    {% endif %}
+  </span>
+    </div>
+
+</div>
+{% endblock %}

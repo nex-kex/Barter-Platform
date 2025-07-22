@@ -1,0 +1,103 @@
+{% extends 'ads/base.html' %}
+
+{% block title %}MyBarter{% endblock %}
+
+{% block content %}
+
+<form method="get" action="{% url 'ads:search' %}" class="mb-4">
+    <!-- Поле поиска по тексту -->
+    <div class="mb-3">
+        <input type="text"
+               name="search"
+               class="form-control"
+               placeholder="Поиск по названию и описанию"
+               value="{{ request.GET.search }}">
+    </div>
+
+    <!-- Фильтр по категории -->
+    <div class="mb-3">
+        <select name="category" class="form-select">
+            <option value="">Все категории</option>
+            {% for category in unique_categories %}
+                <option value="{{ category }}"
+                    {% if request.GET.category == category %}selected{% endif %}>
+                    {{ category }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Фильтр по состоянию -->
+    <div class="mb-3">
+        <select name="condition" class="form-select">
+            <option value="">Любое состояние</option>
+            {% for value, label in condition_choices %}
+                <option value="{{ value }}"
+                    {% if request.GET.condition == value %}selected{% endif %}>
+                    {{ label }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Искать</button>
+    <a href="{% url 'ads:search' %}" class="btn btn-secondary">Сбросить</a>
+</form>
+
+<div class="row text-center">
+    {% for ad in ads %}
+    <div class="col-4">
+        <div class="card mb-4 box-shadow">
+            <div style="position: relative; width: 100%; padding-top: 100%; overflow: hidden;">
+                <img src="/media/{{ ad.image_url }}"
+                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="card-header"
+                 style="height: 100px; display: flex; align-items: center; justify-content: center;">
+                <h4 class="my-0 font-weight-normal">{{ ad.title | truncatechars:45 }}</h4>
+            </div>
+            <div class="card-body">
+                <small class="text-body-secondary">Описание: </small>
+                <p style="height: 70px; display: flex; align-items: center; justify-content: center;">
+                    {{ ad.description | truncatechars:130 }}
+                </p>
+                <small class="text-body-secondary">Категория: </small>
+                <p class="card-text">{{ ad.category }}</p>
+                <small class="text-body-secondary">Статус: </small>
+                <p class="card-text">{{ ad.get_condition_display }}</p>
+                <small class="text-body-secondary">Создано: </small>
+                <p class="card-text">{{ ad.user }} {{ ad.created_at | date:"d.m.Y" }}</p>
+                <a href="{% url 'ads:ad-detail' ad.pk %}"
+                   class="btn btn-lg btn-block btn-outline-primary m-1">Подробнее</a>
+                <hr class="border border-1 opacity-75">
+                <p class="card-text m-0 p-0">ID: {{ ad.pk }}</p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="container m-3">
+        <h1>Ничего не найдено.</h1>
+    </div>
+    {% endfor %}
+
+
+    <div class="justify-content-center pagination">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+      <a class="btn btn-outline-primary" href="?page=1"><<</a>
+      <a class="btn btn-outline-primary" href="?page={{ page_obj.previous_page_number }}"><</a>
+    {% endif %}
+
+    <span class="current">
+      [{{ page_obj.number }} из {{ page_obj.paginator.num_pages }}]
+    </span>
+
+    {% if page_obj.has_next %}
+      <a class="btn btn-outline-primary" href="?page={{ page_obj.next_page_number }}">></a>
+      <a class="btn btn-outline-primary" href="?page={{ page_obj.paginator.num_pages }}">>></a>
+    {% endif %}
+  </span>
+    </div>
+</div>
+
+{% endblock %}

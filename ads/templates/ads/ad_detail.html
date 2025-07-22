@@ -1,0 +1,48 @@
+{% extends 'ads/base.html' %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block content %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">
+        {{ object.name }}
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-6">
+        <img src="/media/{{ object.image_url }}" class="card-img-top" alt="">
+    </div>
+    <div class="col-6">
+        <div class="card m-3 p-2">
+            <div class="card-body">
+                <h1 class="fw-bold">
+                    {{ object.title }}
+                </h1>
+                <p class="card-text"><small class="text-body-secondary">
+                    {{ object.category }}, {{ object.get_condition_display }}
+                </small></p>
+                <p class="card-text">
+                    {{ object.description }}
+                </p>
+
+                {% if user == ad.user %}
+                <a href="{% url 'ads:ad-update' ad.pk %}"
+                   class="btn btn-outline-primary">Редактировать</a>
+                <a href="{% url 'ads:ad-delete' ad.pk %}"
+                   class="btn btn-outline-danger">Удалить</a>
+                {% else %}
+                <a href="{% url 'ads:exchange-create'%}"
+                   class="btn btn-success" type="button">Предложить обмен</a>
+                {% endif %}
+
+                <p class="card-text mt-2"><small class="text-body-secondary">
+                    Создано {{ object.user }} {{ object.created_at | date:"d.m.Y" }}
+                </small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
